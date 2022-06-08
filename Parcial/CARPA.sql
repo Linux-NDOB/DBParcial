@@ -1,0 +1,102 @@
+CREATE DATABASE IF NOT EXISTS CARPA;
+
+USE CARPA;
+
+CREATE TABLE ATRACCIONES (
+  nombre VARCHAR(50)  NOT NULL  ,
+  fecha_inicio DATE  NOT NULL  ,
+  ganancias DECIMAL(8,2)  NOT NULL    ,
+PRIMARY KEY(nombre));
+
+
+
+CREATE TABLE PISTAS (
+  nombre VARCHAR(50)  NOT NULL  ,
+  aforo SMALLINT UNSIGNED  NOT NULL    ,
+PRIMARY KEY(nombre));
+
+
+
+CREATE TABLE ARTISTAS (
+  nif CHAR(9)  NOT NULL  ,
+  A_nif CHAR(9)  NOT NULL  ,
+  apellidos VARCHAR(100)  NOT NULL  ,
+  nombre VARCHAR(45)  NOT NULL  ,
+  nif_jefe CHAR(9)  NOT NULL    ,
+PRIMARY KEY(nif)  ,
+INDEX ARTISTAS_FKIndex1(A_nif),
+  FOREIGN KEY(A_nif)
+    REFERENCES ARTISTAS(nif)
+      ON DELETE NO ACTION
+      ON UPDATE NO ACTION);
+
+
+
+CREATE TABLE ATRACCION_DIA (
+  fecha DATE  NOT NULL  ,
+  ATRACCIONES_nombre VARCHAR(50)  NOT NULL  ,
+  num_espectadores SMALLINT UNSIGNED  NOT NULL  ,
+  ganancias DECIMAL(7,2)  NOT NULL    ,
+PRIMARY KEY(fecha),
+  FOREIGN KEY(ATRACCIONES_nombre)
+    REFERENCES ATRACCIONES(nombre)
+      ON DELETE RESTRICT
+      ON UPDATE CASCADE);
+
+
+
+CREATE TABLE ANIMALES (
+  nombre VARCHAR(50)  NOT NULL  ,
+  nombre_atraccion VARCHAR(50)  NOT NULL  ,
+  nombre_pista VARCHAR(50)  NOT NULL  ,
+  tipo VARCHAR(9)  NOT NULL  ,
+  anhos TINYINT UNSIGNED  NOT NULL  ,
+  peso FLOAT  NOT NULL  ,
+  estatura FLOAT ZEROFILL  NOT NULL    ,
+PRIMARY KEY(nombre)  ,
+INDEX ANIMALES_FKIndex2(nombre_pistas),
+  FOREIGN KEY(nombre_atraccion)
+    REFERENCES ATRACCIONES(nombre)
+      ON DELETE RESTRICT
+      ON UPDATE CASCADE,
+  FOREIGN KEY(nombre_pistas)
+    REFERENCES PISTAS(nombre)
+      ON DELETE RESTRICT
+      ON UPDATE CASCADE);
+
+
+
+CREATE TABLE ANIMALES_ARTISTAS (
+  nombre_animal VARCHAR(50)  NOT NULL  ,
+  nif_artistas CHAR(9)  NOT NULL    ,
+INDEX ANIMALES_ARTISTAS_FKIndex1(nif_artistas)  ,
+INDEX ANIMALES_ARTISTAS_FKIndex2(nombre_animal),
+  FOREIGN KEY(nif_artistas)
+    REFERENCES ARTISTAS(nif)
+      ON DELETE RESTRICT
+      ON UPDATE CASCADE,
+  FOREIGN KEY(nombre_animal)
+    REFERENCES ANIMALES(nombre)
+      ON DELETE RESTRICT
+      ON UPDATE CASCADE);
+
+
+
+CREATE TABLE ATRACCIONES_ARTISTAS (
+  fecha_inicio DATE  NOT NULL  ,
+  nombre_atraccion VARCHAR(50)  NOT NULL  ,
+  nif_artistas CHAR(9)  NOT NULL  ,
+  fecha_fin DATE  NOT NULL    ,
+PRIMARY KEY(fecha_inicio)  ,
+INDEX ATRACCIONES_ARTISTAS_FKIndex2(nif_artistas),
+  FOREIGN KEY(nombre_atraccion)
+    REFERENCES ATRACCIONES(nombre)
+      ON DELETE RESTRICT
+      ON UPDATE CASCADE,
+  FOREIGN KEY(nif_artistas)
+    REFERENCES ARTISTAS(nif)
+      ON DELETE RESTRICT
+      ON UPDATE CASCADE);
+
+
+
